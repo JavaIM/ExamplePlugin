@@ -17,5 +17,3 @@
 找到Main-Class=org.example.JavaIMExamplePlugin.PluginMain
 
 将他修改为Main-Class=PackageID.工件id.主class名
-
-全程不能有英文
