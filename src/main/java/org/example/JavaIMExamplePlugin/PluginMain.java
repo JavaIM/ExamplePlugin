@@ -1,38 +1,46 @@
 package org.example.JavaIMExamplePlugin;
 
-import org.yuezhikong.newServer.ServerInterface;
-import org.yuezhikong.newServer.plugin.Plugin.Plugin;
-import org.yuezhikong.newServer.plugin.Plugin.PluginData;
-import org.yuezhikong.newServer.plugin.event.EventHandler;
-import org.yuezhikong.newServer.plugin.event.Listener;
-import org.yuezhikong.newServer.plugin.event.events.PreLoginEvent;
-import org.yuezhikong.newServer.plugin.event.events.UserLoginEvent;
+import org.yuezhikong.newServer.plugin.Plugin.JavaPlugin;
+import org.yuezhikong.newServer.plugin.Tools;
+import org.yuezhikong.newServer.plugin.configuration.PluginConfig;
 
-public class PluginMain implements Plugin, Listener {
+import java.util.Properties;
 
+public class PluginMain extends JavaPlugin {
+
+    private final String commandName = "test";
+    private Listener listener;
     @Override
-    public void onLoad(PluginData pluginData) {
-        ServerInterface.getServer().getLogger().info("[ExamplePlugin] 插件正在被加载");
-        pluginData.AddEventListener(this);
-        pluginData.AddEventListener(new org.example.JavaIMExamplePlugin.Listener());
+    public void onLoad() {
+        Tools.getServerInstance().getLogger().info("[ExamplePlugin] 插件正在被加载");
+        PluginConfig.SaveDefaultConfiguration(this);//释放默认插件配置文件
+        Properties config = PluginConfig.getConfiguration(this);
+        if (config == null) {
+            Tools.getServerInstance().getLogger().error("无法获取配置文件");
+        }
+        else {
+            if (config.getProperty("Enable-Example-Command-System").equals("true")) {
+                if (!Tools.getServerInstance().getPluginManager().
+                        RegisterCommand(commandName, "一个测试命令",
+                                new TestCommand(), this)) {
+                    Tools.getServerInstance().getLogger().error("无法注册指令：/test");
+                }
+            }
+            if (config.getProperty("Enable-Example-Event-System").equals("true")) {
+                listener = new Listener();
+                Tools.getServerInstance().getPluginManager().AddEventListener(listener,this);
+            }
+        }
+        Tools.getServerInstance().getLogger().info("[ExamplePlugin] 插件加载成功");
     }
 
     @Override
     public void onUnload() {
-        ServerInterface.getServer().getLogger().info("[ExamplePlugin] 插件正在被卸载");
+        Tools.getServerInstance().getLogger().info("[ExamplePlugin] 插件正在被卸载");
+        Tools.getServerInstance().getPluginManager().UnRegisterCommand(commandName);
+        if (listener != null)
+            Tools.getServerInstance().getPluginManager().RemoveEventListener(listener,this);
+        Tools.getServerInstance().getLogger().info("[ExamplePlugin] 插件卸载成功");
     }
 
-    @EventHandler
-    public void onPreLogin(PreLoginEvent event)
-    {
-        ServerInterface.getServer().getLogger().info("[ExamplePlugin] 用户："+event.getUserName()+"正在登录");
-        ServerInterface.getServer().getLogger().info("[ExamplePlugin] 本消息来自PluginMain");
-    }
-
-    @EventHandler
-    public void onLogin(UserLoginEvent event)
-    {
-        ServerInterface.getServer().getLogger().info("[ExamplePlugin] 用户："+event.UserName()+"登录成功！");
-        ServerInterface.getServer().getLogger().info("[ExamplePlugin] 本消息来自PluginMain");
-    }
 }

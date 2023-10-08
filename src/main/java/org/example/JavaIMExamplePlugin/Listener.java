@@ -1,23 +1,23 @@
 package org.example.JavaIMExamplePlugin;
 
-import org.yuezhikong.newServer.ServerInterface;
+import org.yuezhikong.newServer.plugin.Tools;
 import org.yuezhikong.newServer.plugin.event.EventHandler;
-import org.yuezhikong.newServer.plugin.event.events.PreLoginEvent;
+import org.yuezhikong.newServer.plugin.event.events.UserCommandEvent;
 import org.yuezhikong.newServer.plugin.event.events.UserLoginEvent;
 
 public class Listener implements org.yuezhikong.newServer.plugin.event.Listener {
-
     @EventHandler
-    public void onPreLogin(PreLoginEvent event)
+    @SuppressWarnings("unused")
+    public void onUserLogin(UserLoginEvent event)
     {
-        ServerInterface.getServer().getLogger().info("[ExamplePlugin] 用户："+event.getUserName()+"正在登录");
-        ServerInterface.getServer().getLogger().info("[ExamplePlugin] 本消息来自Listener class");
+        Tools.getServerInstance().getLogger().info("用户："+event.UserName()+"登录成功！");
     }
 
     @EventHandler
-    public void onLogin(UserLoginEvent event)
+    @SuppressWarnings("unused")
+    public void onUserCommand(UserCommandEvent event)
     {
-        ServerInterface.getServer().getLogger().info("[ExamplePlugin] 用户："+event.UserName()+"登录成功！");
-        ServerInterface.getServer().getLogger().info("[ExamplePlugin] 本消息来自Listener class");
+        Tools.getServerInstance().getLogger().info
+                ("用户："+event.getUserData().getUserName()+"执行了命令："+event.getCommand());
     }
 }
