@@ -17,7 +17,15 @@ public class Listener implements org.yuezhikong.newServer.plugin.event.Listener 
     @SuppressWarnings("unused")
     public void onUserCommand(UserCommandEvent event)
     {
+        StringBuilder Args = new StringBuilder();
+        for (String arg : event.getCommand().argv())
+        {
+            Args.append(arg).append(" ");
+        }
+        if (Args.length() > 0)
+            Args.deleteCharAt(Args.length() - 1);
         Tools.getServerInstance().getLogger().info
-                ("用户："+event.getUserData().getUserName()+"执行了命令："+event.getCommand());
+                ("用户："+event.getUserData().getUserName()+"执行了命令："
+                        +event.getCommand().Command()+"参数："+ Args);
     }
 }
