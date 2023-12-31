@@ -1,6 +1,6 @@
 package org.example.JavaIMExamplePlugin;
 
-import org.yuezhikong.newServer.plugin.Tools;
+import org.yuezhikong.newServer.ServerTools;
 import org.yuezhikong.newServer.plugin.event.EventHandler;
 import org.yuezhikong.newServer.plugin.event.events.UserCommandEvent;
 import org.yuezhikong.newServer.plugin.event.events.UserLoginEvent;
@@ -10,7 +10,7 @@ public class Listener implements org.yuezhikong.newServer.plugin.event.Listener 
     @SuppressWarnings("unused")
     public void onUserLogin(UserLoginEvent event)
     {
-        Tools.getServerInstance().getLogger().info("用户："+event.UserName()+"登录成功！");
+        ServerTools.getServerInstanceOrThrow().getLogger().info("用户："+event.UserName()+"登录成功！");
     }
 
     @EventHandler
@@ -22,9 +22,9 @@ public class Listener implements org.yuezhikong.newServer.plugin.event.Listener 
         {
             Args.append(arg).append(" ");
         }
-        if (Args.length() > 0)
+        if (!Args.isEmpty())
             Args.deleteCharAt(Args.length() - 1);
-        Tools.getServerInstance().getLogger().info
+        ServerTools.getServerInstanceOrThrow().getLogger().info
                 ("用户："+event.getUserData().getUserName()+"执行了命令："
                         +event.getCommand().Command()+"参数："+ Args);
     }
